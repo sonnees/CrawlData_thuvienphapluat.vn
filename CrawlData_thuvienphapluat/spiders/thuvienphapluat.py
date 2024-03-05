@@ -76,4 +76,4 @@ class ThuvienphapluatSpider(scrapy.Spider):
         
         with open('output.json', 'a', encoding='utf-8') as json_file:
             json.dump(result, json_file, ensure_ascii=False)
-            json_file.write('\n')  
+            json_file.write(',\n')  
