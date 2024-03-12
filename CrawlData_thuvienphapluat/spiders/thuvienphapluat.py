@@ -1,6 +1,11 @@
 import scrapy
 from bs4 import BeautifulSoup
 import json
+import pymongo
+from decouple import config
+url = config('url')
+client = pymongo.MongoClient(url)
+db = client["sonnees"]
 
 def removeLinkTag(links):
     for i in links:
@@ -73,7 +78,12 @@ class ThuvienphapluatSpider(scrapy.Spider):
             "introduction" : str(introduction),
             "content" : content,
         }
+        while True:
+            insert_result = db.thuvienphapluat.insert_one(result)
+            inserted_id = insert_result.inserted_id
+            if(inserted_id):
+                break
         
-        with open('output.json', 'a', encoding='utf-8') as json_file:
-            json.dump(result, json_file, ensure_ascii=False)
-            json_file.write(',\n')  
+        # with open('output.json', 'a', encoding='utf-8') as json_file:
+        #     json.dump(result, json_file, ensure_ascii=False)
+        #     json_file.write(',\n')  
