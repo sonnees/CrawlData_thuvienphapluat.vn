@@ -21,15 +21,14 @@ def cleanText(text):
 
 class ThuvienphapluatSpider(scrapy.Spider):
     name = "thuvienphapluat"
-    start_urls = ["https://thuvienphapluat.vn/phap-luat/bat-dong-san?page={}".format(i) for i in range(10)]
+    start_urls = ["https://thuvienphapluat.vn/phap-luat/bat-dong-san?page={}".format(i) for i in range(1)]
     print("Start URL: ", start_urls)
 
     def parse(self, response):
         links = response.css('article a::attr("href")').getall()
-
         links = removeLinkTag(links)
-
-        for link in links:
+        
+        for index, link in enumerate(links):
             yield scrapy.Request(url="https://thuvienphapluat.vn"+link, callback=self.parse_detail_article)
 
     def parse_detail_article(self, response):
@@ -72,17 +71,17 @@ class ThuvienphapluatSpider(scrapy.Spider):
             "content" : content,
         }
 
-        result =  {
-            "url": url,
-            "title": str(title),
-            "introduction" : str(introduction),
-            "content" : content,
-        }
-        while True:
-            insert_result = db.thuvienphapluat.insert_one(result)
-            inserted_id = insert_result.inserted_id
-            if(inserted_id):
-                break
+        # result =  {
+        #     "url": url,
+        #     "title": str(title),
+        #     "introduction" : str(introduction),
+        #     "content" : content,
+        # }
+        # while True:
+        #     insert_result = db.thuvienphapluat.insert_one(result)
+        #     inserted_id = insert_result.inserted_id
+        #     if(inserted_id):
+        #         break
         
         # with open('output.json', 'a', encoding='utf-8') as json_file:
         #     json.dump(result, json_file, ensure_ascii=False)
